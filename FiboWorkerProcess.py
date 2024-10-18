@@ -11,26 +11,31 @@ from time import time
 import multiprocessing
 import sys
 
+num_cpus = multiprocessing.cpu_count() # CPUs disponibles
+modules = 144 // num_cpus # Saber de a cuantos elementos le toca a cada trabajador
+vector_fibo = [33] * 144 # Arreglo de 144 elementos inicializados en 33
+
 class FiboWorker(multiprocessing.Process):
+
   def __init__(self, n, pid):
     multiprocessing.Process.__init__(self)
     self.n = n
     self._pid = pid
 
   def run(self):
-    print(f"[{self._pid}] Fibonacci de {self.n} es {fibo(self.n)}")
+    for i in range(self._pid * modules, ((self._pid + 1) * modules) - 1): # Dependiendo de los nucleos cada constructor le corresponde unas posiciones determinadas
+      vector_fibo[i] = fibo(vector_fibo[i])
+      print(f"[{self._pid}][{i}] Fibonacci de {self.n} es {vector_fibo[i]}")
 
 def main():
-  max_fibo = 33
-  if len(sys.argv) != 1:
-    max_fibo = int(sys.argv[1])
-  num_cpus = multiprocessing.cpu_count() # CPUs disponibles
-  print(f"Calculando el fibonacci {max_fibo} en {num_cpus} CPUs")
-  procesos = [] # Vector de procesos
   ts = time() # se toma tiempo 
+
+  print(f"Calculando el fibonacci {33} en {num_cpus} CPUs")
+  procesos = [] # Vector de procesos
+  
   for x in range(num_cpus): # Ciclo para crear trabajadores
     print(f"Trabajador {x} comienza")
-    worker = FiboWorker(max_fibo,x)
+    worker = FiboWorker(33,x)
     worker.start()
     procesos.append(worker)
 

@@ -3,17 +3,15 @@ from time import time
 import multiprocessing
 import sys
 
-ts = time()
-
 def main():
-    max_fibo = 33
-    if len(sys.argv) != 1:
-        max_fibo = int(sys.argv[1])
-    num_cpus = multiprocessing.cpu_count() # CPUs disponibles
-    vectorFibo = []
+    ts = time() # se toma tiempo
+   
+    vectorFibo = [33] * 144 # Arreglo de 144 elementos inicializados en 33
     for x in range(144):
-        vectorFibo.append(fibo(max_fibo))
-        print(f"El número fibonacci para la posición [{x}] es {fibo(max_fibo)}\n")
+        old_value = vectorFibo[x]
+        vectorFibo[x] = fibo(vectorFibo[x])
+        
+        print(f"[{x}] Fibonacci de {old_value} es {vectorFibo[x]}\n")
 
     print(f"Tomó {time() - ts}")
 
